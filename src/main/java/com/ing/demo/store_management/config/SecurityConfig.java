@@ -23,6 +23,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
 
     private final StoreUserDetailsService storeUserDetailsService;
+    private final PasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public SecurityConfig(@Autowired StoreUserDetailsService storeUserDetailsService) {
         this.storeUserDetailsService = storeUserDetailsService;
@@ -48,14 +49,14 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return encoder;
     }
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(storeUserDetailsService);
-        authenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
+        authenticationProvider.setPasswordEncoder(encoder);
 
         return authenticationProvider;
     }
