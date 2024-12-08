@@ -1,7 +1,7 @@
 package com.ing.demo.store_management.service.impl;
 
-import com.ing.demo.store_management.exception.auth.RegistrationFailedException;
-import com.ing.demo.store_management.exception.auth.UserAlreadyExistsException;
+import com.ing.demo.store_management.exception.authentication.RegistrationFailedException;
+import com.ing.demo.store_management.exception.authentication.UserAlreadyExistsException;
 import com.ing.demo.store_management.model.authentication.StoreUser;
 import com.ing.demo.store_management.repository.UserRepository;
 import com.ing.demo.store_management.service.UserService;
@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean registerUser(StoreUser user) {
+    public void registerUser(StoreUser user) {
         try {
             if (user == null) {
                 throw new IllegalArgumentException("Invalid user details.");
@@ -38,8 +38,6 @@ public class UserServiceImpl implements UserService {
 
             user.setPassword(encoder.encode(user.getPassword()));
             repository.save(user);
-
-            return true;
         } catch (UserAlreadyExistsException e) {
             LOGGER.error("User registration failed {}", e.getMessage());
             throw e;
