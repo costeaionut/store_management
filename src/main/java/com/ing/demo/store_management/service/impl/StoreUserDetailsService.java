@@ -9,10 +9,12 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Collections;
 
+@Service
 public class StoreUserDetailsService implements UserDetailsService {
 
     private final UserRepository repository;
@@ -28,10 +30,10 @@ public class StoreUserDetailsService implements UserDetailsService {
                         .findByEmail(email)
                         .orElseThrow(() -> new UsernameNotFoundException("User with email " + email + " not found"));
 
-        return new User(storeUser.getEmail(), storeUser.getPassword(), getUserAuthorities(storeUser.getRole()));
+        return new User(storeUser.getEmail(), storeUser.getPassword(), getUserAuthorities(storeUser));
     }
 
-    private Collection<SimpleGrantedAuthority> getUserAuthorities(Role role) {
-        return Collections.singleton(new SimpleGrantedAuthority(role.name()));
+    private Collection<SimpleGrantedAuthority> getUserAuthorities(StoreUser user) {
+        return Collections.singleton(new SimpleGrantedAuthority(user.getRole().name()));
     }
 }
