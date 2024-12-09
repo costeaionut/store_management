@@ -1,6 +1,5 @@
 package com.ing.demo.store_management.service.impl;
 
-import com.ing.demo.store_management.exception.authentication.RegistrationFailedException;
 import com.ing.demo.store_management.exception.authentication.UserAlreadyExistsException;
 import com.ing.demo.store_management.model.authentication.Role;
 import com.ing.demo.store_management.model.authentication.StoreUser;
@@ -60,6 +59,6 @@ public class UserServiceImplTests {
 
     @Test
     public void testRegisterUser_RegistrationFailed() {
-        assertThrows(RegistrationFailedException.class, () -> userService.registerUser(null));
+        assertThrows(IllegalArgumentException.class, () -> userService.registerUser(null));
     }
 }
