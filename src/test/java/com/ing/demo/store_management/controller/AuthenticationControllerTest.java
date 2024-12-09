@@ -2,6 +2,7 @@ package com.ing.demo.store_management.controller;
 
 import com.ing.demo.store_management.model.authentication.Role;
 import com.ing.demo.store_management.model.authentication.StoreUser;
+import com.ing.demo.store_management.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +12,11 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestPropertySource("classpath:application-test.properties")
@@ -26,20 +29,34 @@ public class AuthenticationControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @Autowired
+    private UserRepository repository;
+
+    @Autowired
+    private PasswordEncoder encoder;
+
     private StoreUser validUser;
 
     @BeforeEach
     public void setUp() {
-        validUser = new StoreUser("John", "Doe", "john.doe@example.com", "password123", Role.USER);
+        validUser = new StoreUser("Test", "User", "test@test.com", "password123", Role.USER);
     }
 
     @Test
     public void testRegistration_Successful() {
         ResponseEntity<String> response =
                 restTemplate.postForEntity("http://localhost:" + port + "/api/auth/register", validUser, String.class);
+        StoreUser actualUser = repository.findByEmail(validUser.getEmail()).orElse(null);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals("User registered successfully", response.getBody());
+
+        assertNotNull(actualUser);
+        assertEquals(validUser.getName(), actualUser.getName());
+        assertEquals(validUser.getSurname(), actualUser.getSurname());
+        assertEquals(validUser.getEmail(), actualUser.getEmail());
+        assertTrue(encoder.matches(validUser.getPassword(), actualUser.getPassword()));
+        assertEquals(validUser.getRole(), actualUser.getRole());
     }
 
     @Test
