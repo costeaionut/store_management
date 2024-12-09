@@ -25,6 +25,12 @@ public class JWTServiceImpl implements JWTService {
     @Value("${jwt.secret}")
     private String secretKey;
 
+    /**
+     * Generate the JWT token based on principal info.
+     *
+     * @param principal user principal
+     * @return JWT token
+     */
     @Override
     public String generateJWTToken(User principal) {
 
@@ -42,6 +48,12 @@ public class JWTServiceImpl implements JWTService {
                 .compact();
     }
 
+    /**
+     * Parse the JWT token to retrieve the claims.
+     *
+     * @param token JWT token
+     * @return {@link Claims} JWT token claims
+     */
     @Override
     public Claims parseTokenClaims(String token) {
         return Jwts.parser()
@@ -51,6 +63,14 @@ public class JWTServiceImpl implements JWTService {
                 .getPayload();
     }
 
+    /**
+     * Parse the JWT token in order to retrieve a specific claim.
+     *
+     * @param token  JWT token
+     * @param parser logic to retrieve the claim
+     * @param <T>    type of claim to be retrieved
+     * @return the requested claim
+     */
     @Override
     public <T> T parseTokenClaim(String token, Function<Claims, T> parser) {
         final Claims claims = parseTokenClaims(token);

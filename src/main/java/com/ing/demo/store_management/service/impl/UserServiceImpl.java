@@ -32,6 +32,14 @@ public class UserServiceImpl implements UserService {
         this.authenticationManager = authenticationManager;
     }
 
+    /**
+     * Register a new user in the system.
+     *
+     * @param user user details
+     * @throws IllegalArgumentException    if the user details are null.
+     * @throws UserAlreadyExistsException  if the user's email is already taken.
+     * @throws RegistrationFailedException if registration fails due to an unexpected error.
+     */
     @Override
     public void registerUser(StoreUser user) {
         if (user == null) {
@@ -54,9 +62,18 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Verifies the user's credentials for authentication.
+     *
+     * @param email    user email
+     * @param password user password
+     * @return the authenticated user details
+     * @throws IllegalArgumentException    if the email or password is invalid.
+     * @throws InvalidCredentialsException if authentication fails.
+     */
     @Override
     public Authentication verifyUser(String email, String password) {
-        if(email == null || email.trim().isEmpty()) {
+        if (email == null || email.trim().isEmpty()) {
             throw new IllegalArgumentException("Email is missing or invalid");
         }
 
