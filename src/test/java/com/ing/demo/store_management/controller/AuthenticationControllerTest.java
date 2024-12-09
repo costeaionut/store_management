@@ -1,5 +1,6 @@
 package com.ing.demo.store_management.controller;
 
+import com.ing.demo.store_management.controller.dto.authentication.RegisterRequestDTO;
 import com.ing.demo.store_management.model.authentication.Role;
 import com.ing.demo.store_management.model.authentication.StoreUser;
 import com.ing.demo.store_management.repository.UserRepository;
@@ -35,29 +36,28 @@ public class AuthenticationControllerTest {
     @Autowired
     private PasswordEncoder encoder;
 
-    private StoreUser validUser;
+    private RegisterRequestDTO registerDTO;
 
     @BeforeEach
     public void setUp() {
-        validUser = new StoreUser("Test", "User", "test@test.com", "password123", Role.USER);
+        registerDTO = new RegisterRequestDTO("Test", "User", "test@test.com", "password123", Role.USER);
         repository.deleteAll();
     }
 
     @Test
     public void testRegistration_Successful() {
         ResponseEntity<String> response =
-                restTemplate.postForEntity("http://localhost:" + port + "/api/auth/register", validUser, String.class);
-        StoreUser actualUser = repository.findByEmail(validUser.getEmail()).orElse(null);
+                restTemplate.postForEntity("http://localhost:" + port + "/api/auth/register", registerDTO, String.class);
+        StoreUser actualUser = repository.findByEmail(registerDTO.getEmail()).orElse(null);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals("User registered successfully", response.getBody());
 
         assertNotNull(actualUser);
-        assertEquals(validUser.getName(), actualUser.getName());
-        assertEquals(validUser.getSurname(), actualUser.getSurname());
-        assertEquals(validUser.getEmail(), actualUser.getEmail());
-        assertTrue(encoder.matches(validUser.getPassword(), actualUser.getPassword()));
-        assertEquals(validUser.getRole(), actualUser.getRole());
+        assertEquals(registerDTO.getName(), actualUser.getName());
+        assertEquals(registerDTO.getSurname(), actualUser.getSurname());
+        assertTrue(encoder.matches(registerDTO.getPassword(), actualUser.getPassword()));
+        assertEquals(registerDTO.getRole(), actualUser.getRole());
     }
 
     @Test
@@ -65,14 +65,14 @@ public class AuthenticationControllerTest {
         assertEquals(
                 HttpStatus.CREATED,
                 restTemplate
-                        .postForEntity("http://localhost:" + port + "/api/auth/register", validUser, String.class)
+                        .postForEntity("http://localhost:" + port + "/api/auth/register", registerDTO, String.class)
                         .getStatusCode()
         );
         ResponseEntity<String> response =
-                restTemplate.postForEntity("http://localhost:" + port + "/api/auth/register", validUser, String.class);
+                restTemplate.postForEntity("http://localhost:" + port + "/api/auth/register", registerDTO, String.class);
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-        assertEquals("Email is already taken.", response.getBody());
+        assertEquals("Email is already taken", response.getBody());
     }
 
     @Test
