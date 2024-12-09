@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean verifyUser(String email, String password) {
+    public Authentication verifyUser(String email, String password) {
         if(email == null || email.trim().isEmpty()) {
             throw new IllegalArgumentException("Email is missing or invalid");
         }
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
 
         try {
             Authentication authentication = new UsernamePasswordAuthenticationToken(email, password);
-            return authenticationManager.authenticate(authentication).isAuthenticated();
+            return authenticationManager.authenticate(authentication);
         } catch (AuthenticationException e) {
             //Not the best practice since email is a sensitive data. Should be changed for ID.
             LOGGER.error("User authentication failed for email {} {}", email, e.getMessage());
