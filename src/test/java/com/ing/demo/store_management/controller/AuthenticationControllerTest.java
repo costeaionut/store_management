@@ -40,6 +40,7 @@ public class AuthenticationControllerTest {
     @BeforeEach
     public void setUp() {
         validUser = new StoreUser("Test", "User", "test@test.com", "password123", Role.USER);
+        repository.deleteAll();
     }
 
     @Test
@@ -61,7 +62,12 @@ public class AuthenticationControllerTest {
 
     @Test
     public void testRegistration_UserDuplicated() {
-        restTemplate.postForEntity("http://localhost:" + port + "/api/auth/register", validUser, String.class);
+        assertEquals(
+                HttpStatus.CREATED,
+                restTemplate
+                        .postForEntity("http://localhost:" + port + "/api/auth/register", validUser, String.class)
+                        .getStatusCode()
+        );
         ResponseEntity<String> response =
                 restTemplate.postForEntity("http://localhost:" + port + "/api/auth/register", validUser, String.class);
 
