@@ -1,5 +1,7 @@
 package com.ing.demo.store_management.controller;
 
+import com.ing.demo.store_management.controller.dto.authentication.AuthenticateRequestDTO;
+import com.ing.demo.store_management.controller.dto.authentication.AuthenticateResponseDTO;
 import com.ing.demo.store_management.controller.dto.authentication.RegisterRequestDTO;
 import com.ing.demo.store_management.controller.mappers.UserMapper;
 import com.ing.demo.store_management.service.UserService;
@@ -27,5 +29,14 @@ public class AuthenticationController {
     public ResponseEntity<?> registerUser(@Validated @RequestBody RegisterRequestDTO registerDto) {
         userService.registerUser(UserMapper.toModel(registerDto));
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+    }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthenticateResponseDTO> loginUser(@Validated @RequestBody AuthenticateRequestDTO authenticationDto) {
+
+        boolean isValid = userService.verifyUser(authenticationDto.getEmail(), authenticationDto.getPassword());
+
+        return ResponseEntity.ok().body(new AuthenticateResponseDTO());
     }
 }
