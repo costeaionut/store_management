@@ -1,6 +1,8 @@
-package com.ing.demo.store_management.config;
+package com.ing.demo.store_management.security;
 
 
+import com.ing.demo.store_management.config.SecurityConfigProperties;
+import com.ing.demo.store_management.security.filter.JWTFilter;
 import com.ing.demo.store_management.service.impl.StoreUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,17 +18,23 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final JWTFilter jwtFilter;
     private final StoreUserDetailsService storeUserDetailsService;
-    private final PasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final SecurityConfigProperties securityConfigProperties;
 
-    public SecurityConfig(@Autowired StoreUserDetailsService storeUserDetailsService) {
+    @Autowired
+    public SecurityConfig(JWTFilter jwtFilter, StoreUserDetailsService storeUserDetailsService,
+                          SecurityConfigProperties securityConfigProperties) {
+        this.jwtFilter = jwtFilter;
         this.storeUserDetailsService = storeUserDetailsService;
+        this.securityConfigProperties = securityConfigProperties;
     }
 
     @Bean
@@ -34,9 +42,10 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(securityConfigProperties.getIgnoredPaths().toArray(new String[0])).permitAll()
                         .anyRequest().authenticated()
                 )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
@@ -49,14 +58,14 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return encoder;
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(storeUserDetailsService);
-        authenticationProvider.setPasswordEncoder(encoder);
+        authenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
 
         return authenticationProvider;
     }
