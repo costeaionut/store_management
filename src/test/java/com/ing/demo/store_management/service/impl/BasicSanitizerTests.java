@@ -31,7 +31,7 @@ public class BasicSanitizerTests {
     }
 
     @Test
-    public  void testNullInput() {
+    public void testNullInput() {
         assertNull(sanitizer.sanitizeInput(null));
     }
 }
