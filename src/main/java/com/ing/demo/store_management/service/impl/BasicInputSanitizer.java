@@ -19,8 +19,14 @@ public class BasicInputSanitizer implements InputSanitizer {
         ESCAPING_RULES.put("%", "\\%");
         ESCAPING_RULES.put("_", "\\_");
     }
+
     @Override
     public String sanitizeInput(String rawInput) {
+
+        if (rawInput == null) {
+            return null;
+        }
+
         String escapedInput = rawInput;
 
         for (Map.Entry<String, String> entry : ESCAPING_RULES.entrySet()) {
