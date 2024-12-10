@@ -1,5 +1,6 @@
-package com.ing.demo.store_management.model.product;
+package com.ing.demo.store_management.model.product.concrete;
 
+import com.ing.demo.store_management.model.product.base.Product;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotEmpty;
