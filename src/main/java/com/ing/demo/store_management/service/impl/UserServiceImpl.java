@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -41,7 +42,7 @@ public class UserServiceImpl implements UserService {
      * @throws RegistrationFailedException if registration fails due to an unexpected error.
      */
     @Override
-    public void registerUser(StoreUser user) {
+    public void registerUser(@Validated StoreUser user) {
         if (user == null) {
             throw new IllegalArgumentException("Invalid user details");
         }

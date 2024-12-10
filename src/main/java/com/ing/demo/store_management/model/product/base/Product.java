@@ -35,6 +35,5 @@ public class Product {
     private double price;
 
     @Enumerated(EnumType.STRING)
-    @NotEmpty(message = "Category can not be empty")
     private Category category;
 }

@@ -16,7 +16,6 @@ import lombok.EqualsAndHashCode;
 public class Clothing extends Product {
 
     @Enumerated(EnumType.STRING)
-    @NotEmpty(message = "Size cannot be empty")
     private Size size;
 
     @Column(nullable = false)
