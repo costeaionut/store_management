@@ -41,7 +41,7 @@ public class JWTFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER_KEY);
 
-        if (isValidAuthorizationHeader(authorizationHeader)) {
+        if (!isValidAuthorizationHeader(authorizationHeader)) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authorization header is missing or invalid");
             return;
         }
