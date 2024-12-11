@@ -17,12 +17,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({ InvalidCredentialsException.class, AuthorizationDeniedException.class })
-    public ResponseEntity<String> handleInvalidCredentialsException(InvalidCredentialsException e) {
+    public ResponseEntity<String> handleInvalidCredentialsException(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
     @ExceptionHandler({IllegalArgumentException.class, ProductNotFoundException.class})
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+    public ResponseEntity<String> handleIllegalArgumentException(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 

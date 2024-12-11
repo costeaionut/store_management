@@ -12,15 +12,20 @@ public class GroceryProductMapper extends ProductMapper<GroceryProperties> {
     }
 
     @Override
-    public void mapFromDTO(ProductRequest dto, Product product) {
-        super.mapFromDTO(dto, product);
+    protected Product getNewProduct() {
+        return null;
+    }
+
+    @Override
+    public Grocery mapFromDTO(ProductRequest dto) {
+        Grocery grocery = (Grocery) super.mapFromDTO(dto);
 
         GroceryProperties properties = getProperties(dto);
-        if (product instanceof Grocery grocery) {
-            grocery.setWeight(properties.getWeight());
-            grocery.setPerishable(properties.isPerishable());
-            grocery.setExpiryDate(properties.getExpiryDate());
-        }
+        grocery.setWeight(properties.getWeight());
+        grocery.setPerishable(properties.isPerishable());
+        grocery.setExpiryDate(properties.getExpiryDate());
+
+        return grocery;
     }
 
     @Override
