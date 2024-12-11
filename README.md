@@ -158,9 +158,11 @@ mvn spring-boot:run
         }
       } 
       ```
+
+
 - Add product:
     - **Type**: POST
-    - **Path**: `/api/product/add`
+    - **Path**: `/api/product`
     - **Access**: `ADMIN` or `INVENTORY_MANAGER`
     - **Body**:
       ```json
@@ -193,63 +195,79 @@ mvn spring-boot:run
 
 
 - Update product:
-    - **Type**: POST
-    - **Path**: `/api/product/update`
+    - **Type**: PUT
+    - **Path**: `/api/product/{id}`
     - **Access**: `ADMIN` or `INVENTORY_MANAGER`
-  - **Body**:
-    ```json
-    {
-      "name": "string",
-      "description": "string",
-      "price": "double",
-      "category": "ELECTRONICS | GROCERY |CLOTHING",
+    - **Parameter**: id of the product
+    - **Body**:
+      ```json
+      {
+        "name": "string",
+        "description": "string",
+        "price": "double",
+        "category": "ELECTRONICS | GROCERY |CLOTHING",
+        
+        "electronicProperties":{
+          "brand": "string",
+          "warranty": "int",
+          "powerRequirement": "string"
+        },
       
-      "electronicProperties":{
-        "brand": "string",
-        "warranty": "int",
-        "powerRequirement": "string"
-      },
-    
-      "groceryProperties":{
-        "expiryDate": "string",
-        "weight": "double",
-        "isPerishable": "boolean"
-      },
-      
-      "clothing":{
-        "size": "XXS | XS | S | M | L | XL | XXL",
-        "material": "string",
-        "color": "string"
-      }
-    } 
-    ```
-    - **Response**: Updated product
+        "groceryProperties":{
+          "expiryDate": "string",
+          "weight": "double",
+          "isPerishable": "boolean"
+        },
+        
+        "clothing":{
+          "size": "XXS | XS | S | M | L | XL | XXL",
+          "material": "string",
+          "color": "string"
+        }
+      } 
+      ```
+        - **Response**: Updated product
+
 
 - Delete product:
-    - **Type**: POST
-    - **Path**: `/api/product/delete/{id}`
+    - **Type**: DELETE
+    - **Path**: `/api/product/{id}`
     - **Access**: `ADMIN` or `INVENTORY_MANAGER`
     - **Parameters**: id of the product
 
 ### Logs management (WIP)
+
 - Retrieve product operation logs
-  - **Type**: GET
-  - **Path**: `/api/logs/`
-  - **Access**: `ADMIN`
-  - **Parameters**: Optional filters list
-  - **Response**:
-    ```json
-        {
-          "logs": [
-            { 
-              "operator": "string",
-              "product": "int",
-              "date": "string",
-              "operation": "string"
-            },
-            {
-              "...": "..."
-            }
-          ]   
-        } 
-    ```
+    - **Type**: GET
+    - **Path**: `/api/logs/`
+    - **Access**: `ADMIN`
+    - **Parameters**: Optional filters list
+    - **Response**:
+      ```json
+          {
+            "logs": [
+              { 
+                "operator": "string",
+                "product": "int",
+                "date": "string",
+                "operation": "string"
+              },
+              {
+                "...": "..."
+              }
+            ]   
+          } 
+      ```
+
+### Access table
+
+| Endpoint                 | USER | INVENTORY_MANAGER | ADMIN |
+|--------------------------|------|-------------------|-------|
+| POST /api/auth/register  | ✅    | ✅                 | ✅     |
+| POST /api/auth/login     | ✅    | ✅                 | ✅     |
+| GET /api/product/        | ✅    | ✅                 | ✅     |
+| GET /api/product/{id}    | ✅    | ✅                 | ✅     |
+| POST /api/product        | ❌    | ✅                 | ✅     |
+| PUT /api/product/{id}    | ❌    | ✅                 | ✅     |
+| DELETE /api/product/{id} | ❌    | ✅                 | ✅     |
+| GET /api/logs            | ❌    | ❌                 | ✅     |
