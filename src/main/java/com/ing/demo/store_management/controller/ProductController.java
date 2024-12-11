@@ -1,9 +1,11 @@
 package com.ing.demo.store_management.controller;
 
-import com.ing.demo.store_management.controller.dto.product.CreateProductRequest;
+import com.ing.demo.store_management.controller.dto.product.ProductRequest;
+import com.ing.demo.store_management.mappers.product.ProductMapper;
 import com.ing.demo.store_management.model.product.base.Product;
-import com.ing.demo.store_management.model.product.concrete.Electronic;
-import com.ing.demo.store_management.model.product.concrete.Grocery;
+import com.ing.demo.store_management.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -22,33 +24,51 @@ import java.util.List;
 @RequestMapping("/api/product")
 public class ProductController {
 
+    private final ProductService productService;
+
+    @Autowired
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts() {
-        return ResponseEntity.ok().body(List.of(new Electronic(), new Grocery()));
+        return ResponseEntity.ok().body(productService.retrieveAllProducts());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> getSpecificProduct(@PathVariable int id) {
-        return ResponseEntity.ok().body(new Electronic());
+        Product product = productService.retrieveProductById(id);
+        return ResponseEntity.ok().body(product);
     }
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ADMIN', 'INVENTORY_MANAGER')")
-    public ResponseEntity<Product> createProduct(@Validated @RequestBody CreateProductRequest createDto) {
-        return ResponseEntity.ok().body(new Product());
+    public ResponseEntity<Product> createProduct(@Validated @RequestBody ProductRequest createDto) {
+        Product productToCreate = convertDtoToProduct(createDto);
+        Product createdProduct = productService.createProduct(productToCreate);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'INVENTORY_MANAGER')")
-    public ResponseEntity<?> updateProduct(@Validated @RequestBody CreateProductRequest updateDto, @PathVariable int id) {
-        return ResponseEntity.ok().body("Updated");
+    public ResponseEntity<Product> updateProduct(@Validated @RequestBody ProductRequest updateDto, @PathVariable int id) {
+
+        Product productToUpdate = convertDtoToProduct(updateDto);
+        Product updatedProduct = productService.updateProduct(id, productToUpdate);
+
+        return ResponseEntity.ok().body(updatedProduct);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'INVENTORY_MANAGER')")
-    public ResponseEntity<?> deleteProduct(@PathVariable int id) {
-        return ResponseEntity.ok().body("Deleted");
+    public ResponseEntity<Void> deleteProduct(@PathVariable int id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.ok().build();
     }
 
+    private Product convertDtoToProduct(ProductRequest dto) {
+        ProductMapper<?> mapper = productService.getMapperFromCategory(dto.getCategory());
+        return mapper.mapFromDTO(dto);
+    }
 }
