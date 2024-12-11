@@ -3,7 +3,7 @@ package com.ing.demo.store_management.controller;
 import com.ing.demo.store_management.controller.dto.authentication.AuthenticateRequestDTO;
 import com.ing.demo.store_management.controller.dto.authentication.AuthenticateResponseDTO;
 import com.ing.demo.store_management.controller.dto.authentication.RegisterRequestDTO;
-import com.ing.demo.store_management.mappers.UserMapper;
+import com.ing.demo.store_management.mappers.authentication.UserMapper;
 import com.ing.demo.store_management.service.InputSanitizer;
 import com.ing.demo.store_management.service.JWTService;
 import com.ing.demo.store_management.service.UserService;

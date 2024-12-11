@@ -1,4 +1,4 @@
-package com.ing.demo.store_management.mappers;
+package com.ing.demo.store_management.mappers.authentication;
 
 import com.ing.demo.store_management.controller.dto.authentication.RegisterRequestDTO;
 import com.ing.demo.store_management.model.authentication.StoreUser;
