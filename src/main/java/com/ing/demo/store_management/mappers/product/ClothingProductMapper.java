@@ -25,6 +25,7 @@ public class ClothingProductMapper extends ProductMapper<ClothingProperties> {
         clothing.setColor(properties.getColor());
         clothing.setMaterial(properties.getMaterial());
 
+        LOGGER.debug("Mapped clothing product from dto: {}", dto);
         return clothing;
     }
 
@@ -37,5 +38,7 @@ public class ClothingProductMapper extends ProductMapper<ClothingProperties> {
             oldC.setColor(newC.getColor());
             oldC.setMaterial(newC.getMaterial());
         }
+
+        LOGGER.debug("Updated clothing product to new values: {}", newP);
     }
 }

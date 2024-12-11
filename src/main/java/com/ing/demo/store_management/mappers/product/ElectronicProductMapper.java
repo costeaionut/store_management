@@ -16,6 +16,7 @@ public class ElectronicProductMapper extends ProductMapper<ElectronicProperties>
         electronic.setWarrantyPeriod(properties.getWarrantyPeriod());
         electronic.setPowerRequirement(properties.getPowerRequirement());
 
+        LOGGER.debug("Mapped electronics product from dto: {}", dto);
         return electronic;
     }
 
@@ -27,6 +28,7 @@ public class ElectronicProductMapper extends ProductMapper<ElectronicProperties>
             oldE.setWarrantyPeriod(newE.getWarrantyPeriod());
             oldE.setPowerRequirement(newE.getPowerRequirement());
         }
+        LOGGER.debug("Updated electronics product to new values: {}", newP);
     }
 
     @Override

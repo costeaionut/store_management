@@ -13,7 +13,7 @@ public class GroceryProductMapper extends ProductMapper<GroceryProperties> {
 
     @Override
     protected Product getNewProduct() {
-        return null;
+        return new Grocery();
     }
 
     @Override
@@ -25,6 +25,7 @@ public class GroceryProductMapper extends ProductMapper<GroceryProperties> {
         grocery.setPerishable(properties.isPerishable());
         grocery.setExpiryDate(properties.getExpiryDate());
 
+        LOGGER.debug("Mapped grocery product from dto: {}", dto);
         return grocery;
     }
 
@@ -36,5 +37,6 @@ public class GroceryProductMapper extends ProductMapper<GroceryProperties> {
             oldG.setPerishable(newG.isPerishable());
             oldG.setExpiryDate(newG.getExpiryDate());
         }
+        LOGGER.debug("Updated grocery product to new values: {}", newP);
     }
 }

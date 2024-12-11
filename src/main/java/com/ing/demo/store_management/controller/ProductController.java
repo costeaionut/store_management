@@ -4,6 +4,8 @@ import com.ing.demo.store_management.controller.dto.product.ProductRequest;
 import com.ing.demo.store_management.mappers.product.ProductMapper;
 import com.ing.demo.store_management.model.product.base.Product;
 import com.ing.demo.store_management.service.ProductService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,8 @@ import java.util.List;
 @RequestMapping("/api/product")
 public class ProductController {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
+
     private final ProductService productService;
 
     @Autowired
@@ -33,11 +37,14 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts() {
+        LOGGER.debug("Processing getAllProducts request.");
         return ResponseEntity.ok().body(productService.retrieveAllProducts());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> getSpecificProduct(@PathVariable int id) {
+        LOGGER.debug("Processing getSpecificProduct request for id: {}.", id);
+
         Product product = productService.retrieveProductById(id);
         return ResponseEntity.ok().body(product);
     }
@@ -45,6 +52,8 @@ public class ProductController {
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ADMIN', 'INVENTORY_MANAGER')")
     public ResponseEntity<Product> createProduct(@Validated @RequestBody ProductRequest createDto) {
+        LOGGER.debug("Processing createProduct request for product: {}.", createDto);
+
         Product productToCreate = convertDtoToProduct(createDto);
         Product createdProduct = productService.createProduct(productToCreate);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
@@ -53,6 +62,7 @@ public class ProductController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'INVENTORY_MANAGER')")
     public ResponseEntity<Product> updateProduct(@Validated @RequestBody ProductRequest updateDto, @PathVariable int id) {
+        LOGGER.debug("Processing updateProduct request for id {} and product new details: {}.", id, updateDto);
 
         Product productToUpdate = convertDtoToProduct(updateDto);
         Product updatedProduct = productService.updateProduct(id, productToUpdate);
@@ -63,6 +73,8 @@ public class ProductController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'INVENTORY_MANAGER')")
     public ResponseEntity<Void> deleteProduct(@PathVariable int id) {
+        LOGGER.debug("Processing deleteProduct request for id: {}.", id);
+
         productService.deleteProduct(id);
         return ResponseEntity.ok().build();
     }
