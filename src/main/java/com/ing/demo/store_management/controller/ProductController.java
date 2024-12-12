@@ -49,7 +49,7 @@ public class ProductController {
         return ResponseEntity.ok().body(product);
     }
 
-    @PostMapping
+    @PostMapping("/")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'INVENTORY_MANAGER')")
     public ResponseEntity<Product> createProduct(@Validated @RequestBody ProductRequest createDto) {
         LOGGER.debug("Processing createProduct request for product: {}.", createDto);
