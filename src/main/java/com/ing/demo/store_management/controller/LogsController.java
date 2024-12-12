@@ -1,5 +1,6 @@
 package com.ing.demo.store_management.controller;
 
+import com.ing.demo.store_management.controller.dto.log.LogResponseDTO;
 import com.ing.demo.store_management.mappers.log.LogFilterMapper;
 import com.ing.demo.store_management.model.log.Log;
 import com.ing.demo.store_management.service.ProductLogService;
@@ -31,11 +32,14 @@ public class LogsController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<List<Log>> getLogs(@RequestParam Map<String, String> filters) {
+    public ResponseEntity<List<LogResponseDTO>> getLogs(@RequestParam Map<String, String> filters) {
         LOGGER.debug("Processing logs retrieval operation with filters: {}", filters);
 
         List<Predicate<Log>> predicates = LogFilterMapper.mapFilters(filters);
-        List<Log> logs = logService.retrieveLogsBasedOnFilters(predicates);
+        List<LogResponseDTO> logs =
+                logService.retrieveLogsBasedOnFilters(predicates).stream()
+                        .map(LogResponseDTO::new)
+                        .toList();
 
         return ResponseEntity.ok(logs);
     }
