@@ -86,7 +86,7 @@ mvn spring-boot:run
       ```
     - **Response**: JWT Token
 
-### Production management endpoints (WIP)
+### Product management endpoints
 
 - Retrieve all products endpoint:
     - **Type**: GET
@@ -238,7 +238,7 @@ mvn spring-boot:run
     - **Access**: `ADMIN` or `INVENTORY_MANAGER`
     - **Parameters**: id of the product
 
-### Logs management (WIP)
+### Logs management
 
 - Retrieve product operation logs
     - **Type**: GET
