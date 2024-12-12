@@ -2,8 +2,10 @@ package com.ing.demo.store_management.config;
 
 import com.ing.demo.store_management.exception.authentication.InvalidCredentialsException;
 import com.ing.demo.store_management.exception.authentication.UserAlreadyExistsException;
+import com.ing.demo.store_management.exception.product.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -15,12 +17,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
-    public ResponseEntity<String> handleInvalidCredentialsException(InvalidCredentialsException e) {
+    public ResponseEntity<String> handleInvalidCredentialsException(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<String> handleAuthorizationDeniedException(RuntimeException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class, ProductNotFoundException.class})
+    public ResponseEntity<String> handleIllegalArgumentException(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
