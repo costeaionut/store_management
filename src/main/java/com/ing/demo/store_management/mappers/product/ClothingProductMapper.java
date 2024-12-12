@@ -1,13 +1,13 @@
 package com.ing.demo.store_management.mappers.product;
 
-import com.ing.demo.store_management.controller.dto.product.ProductRequest;
+import com.ing.demo.store_management.controller.dto.product.ProductRequestDTO;
 import com.ing.demo.store_management.controller.dto.product.properties.ClothingProperties;
 import com.ing.demo.store_management.model.product.base.Product;
 import com.ing.demo.store_management.model.product.concrete.Clothing;
 
 public class ClothingProductMapper extends ProductMapper<ClothingProperties> {
     @Override
-    protected ClothingProperties getProperties(ProductRequest dto) {
+    protected ClothingProperties getProperties(ProductRequestDTO dto) {
         return dto.getClothingProperties();
     }
 
@@ -17,7 +17,7 @@ public class ClothingProductMapper extends ProductMapper<ClothingProperties> {
     }
 
     @Override
-    public Clothing mapFromDTO(ProductRequest dto) {
+    public Clothing mapFromDTO(ProductRequestDTO dto) {
         Clothing clothing = (Clothing) super.mapFromDTO(dto);
 
         ClothingProperties properties = getProperties(dto);

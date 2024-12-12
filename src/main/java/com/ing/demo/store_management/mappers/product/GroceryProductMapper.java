@@ -1,13 +1,13 @@
 package com.ing.demo.store_management.mappers.product;
 
-import com.ing.demo.store_management.controller.dto.product.ProductRequest;
+import com.ing.demo.store_management.controller.dto.product.ProductRequestDTO;
 import com.ing.demo.store_management.controller.dto.product.properties.GroceryProperties;
 import com.ing.demo.store_management.model.product.base.Product;
 import com.ing.demo.store_management.model.product.concrete.Grocery;
 
 public class GroceryProductMapper extends ProductMapper<GroceryProperties> {
     @Override
-    protected GroceryProperties getProperties(ProductRequest dto) {
+    protected GroceryProperties getProperties(ProductRequestDTO dto) {
         return dto.getGroceryProperties();
     }
 
@@ -17,7 +17,7 @@ public class GroceryProductMapper extends ProductMapper<GroceryProperties> {
     }
 
     @Override
-    public Grocery mapFromDTO(ProductRequest dto) {
+    public Grocery mapFromDTO(ProductRequestDTO dto) {
         Grocery grocery = (Grocery) super.mapFromDTO(dto);
 
         GroceryProperties properties = getProperties(dto);

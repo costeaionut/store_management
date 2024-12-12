@@ -1,6 +1,6 @@
 package com.ing.demo.store_management.controller;
 
-import com.ing.demo.store_management.controller.dto.product.ProductRequest;
+import com.ing.demo.store_management.controller.dto.product.ProductRequestDTO;
 import com.ing.demo.store_management.controller.dto.product.properties.ClothingProperties;
 import com.ing.demo.store_management.controller.dto.product.properties.ElectronicProperties;
 import com.ing.demo.store_management.mappers.product.ProductMapper;
@@ -56,7 +56,7 @@ public class ProductController {
 
     @PostMapping("/")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'INVENTORY_MANAGER')")
-    public ResponseEntity<Product> createProduct(@Validated @RequestBody ProductRequest createDto) {
+    public ResponseEntity<Product> createProduct(@Validated @RequestBody ProductRequestDTO createDto) {
         LOGGER.debug("Processing createProduct request for product: {}.", createDto);
 
         createDto = sanitizerProductRequest(createDto);
@@ -68,7 +68,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'INVENTORY_MANAGER')")
-    public ResponseEntity<Product> updateProduct(@Validated @RequestBody ProductRequest updateDto, @PathVariable int id) {
+    public ResponseEntity<Product> updateProduct(@Validated @RequestBody ProductRequestDTO updateDto, @PathVariable int id) {
         LOGGER.debug("Processing updateProduct request for id {} and product new details: {}.", id, updateDto);
 
         updateDto = sanitizerProductRequest(updateDto);
@@ -88,13 +88,13 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
-    private Product convertDtoToProduct(ProductRequest dto) {
+    private Product convertDtoToProduct(ProductRequestDTO dto) {
         ProductMapper<?> mapper = productService.getMapperFromCategory(dto.getCategory());
         return mapper.mapFromDTO(dto);
     }
 
-    private ProductRequest sanitizerProductRequest(ProductRequest request) {
-        ProductRequest sanitized = new ProductRequest();
+    private ProductRequestDTO sanitizerProductRequest(ProductRequestDTO request) {
+        ProductRequestDTO sanitized = new ProductRequestDTO();
 
         sanitized.setName(sanitizer.sanitizeInput(request.getName()));
         sanitized.setDescription(sanitizer.sanitizeInput(request.getDescription()));
