@@ -14,6 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 @Service
 public class ProductLogServiceImpl implements ProductLogService {
 
@@ -56,5 +60,18 @@ public class ProductLogServiceImpl implements ProductLogService {
             LOGGER.error("Unexpected error while adding log for user: {}, product: {}, operation: {}", user, product, operation);
             throw new ProductLogException("Unexpected error occurred during product log creation", e.getCause());
         }
+    }
+
+    @Override
+    public List<Log> retrieveLogsBasedOnFilters(List<Predicate<Log>> predicateList) {
+        List<Log> allLogs = logRepository.findAll();
+
+        Predicate<Log> combinedPredicate = predicateList.stream()
+                .reduce(Predicate::and)
+                .orElse(log -> true);
+
+        return allLogs.stream()
+                .filter(combinedPredicate)
+                .collect(Collectors.toList());
     }
 }
