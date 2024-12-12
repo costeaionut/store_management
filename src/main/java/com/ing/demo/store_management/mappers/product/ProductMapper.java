@@ -1,6 +1,6 @@
 package com.ing.demo.store_management.mappers.product;
 
-import com.ing.demo.store_management.controller.dto.product.ProductRequest;
+import com.ing.demo.store_management.controller.dto.product.ProductRequestDTO;
 import com.ing.demo.store_management.controller.dto.product.properties.ProductProperties;
 import com.ing.demo.store_management.model.product.base.Product;
 import org.slf4j.Logger;
@@ -10,7 +10,7 @@ public abstract class ProductMapper<P extends ProductProperties> {
 
     protected final static Logger LOGGER = LoggerFactory.getLogger(ProductMapper.class);
 
-    public Product mapFromDTO(ProductRequest dto) {
+    public Product mapFromDTO(ProductRequestDTO dto) {
         Product product = getNewProduct();
 
         product.setName(dto.getName());
@@ -28,7 +28,7 @@ public abstract class ProductMapper<P extends ProductProperties> {
         oldP.setCategory(newP.getCategory());
     }
 
-    protected abstract P getProperties(ProductRequest dto);
+    protected abstract P getProperties(ProductRequestDTO dto);
 
     protected abstract Product getNewProduct();
 }

@@ -52,6 +52,9 @@ mvn spring-boot:run
 
 - To access the API use the default base URL `http://localhost:8080`
 
+5. Test the application
+
+- The [Store Management.postman_collection.json](https://github.com/costeaionut/store_management/blob/develop/Store%20Management.postman_collection.json) can be imported in the local Postman and used for testing purposes.
 ## API Endpoints
 
 ### Authentication endpoints

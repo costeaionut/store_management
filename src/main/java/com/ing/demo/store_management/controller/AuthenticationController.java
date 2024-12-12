@@ -7,6 +7,8 @@ import com.ing.demo.store_management.mappers.authentication.UserMapper;
 import com.ing.demo.store_management.service.InputSanitizer;
 import com.ing.demo.store_management.service.JWTService;
 import com.ing.demo.store_management.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthenticationController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
+
     private final JWTService jwtService;
     private final UserService userService;
     private final InputSanitizer sanitizer;
@@ -35,6 +39,8 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Validated @RequestBody RegisterRequestDTO registerDto) {
+        LOGGER.debug("Processing register user request.");
+
         // 1. Sanitize incoming dto
         registerDto = sanitizeRegisterRequestDTO(registerDto);
 
@@ -48,6 +54,8 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticateResponseDTO> loginUser(@Validated @RequestBody AuthenticateRequestDTO authenticationDto) {
+        LOGGER.debug("Processing login user request.");
+
         // 1. Sanitize incoming dto
         authenticationDto = sanitizeAuthenticationRequestDTO(authenticationDto);
 
@@ -63,11 +71,11 @@ public class AuthenticationController {
 
     private RegisterRequestDTO sanitizeRegisterRequestDTO(RegisterRequestDTO rawDTO) {
         return new RegisterRequestDTO(
-            sanitize(rawDTO.getName()),
-            sanitize(rawDTO.getSurname()),
-            sanitize(rawDTO.getEmail()),
-            sanitize(rawDTO.getPassword()),
-            rawDTO.getRole()
+                sanitize(rawDTO.getName()),
+                sanitize(rawDTO.getSurname()),
+                sanitize(rawDTO.getEmail()),
+                sanitize(rawDTO.getPassword()),
+                rawDTO.getRole()
         );
     }
 

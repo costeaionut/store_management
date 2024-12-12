@@ -1,6 +1,6 @@
 package com.ing.demo.store_management.mappers.product;
 
-import com.ing.demo.store_management.controller.dto.product.ProductRequest;
+import com.ing.demo.store_management.controller.dto.product.ProductRequestDTO;
 import com.ing.demo.store_management.controller.dto.product.properties.ElectronicProperties;
 import com.ing.demo.store_management.model.product.base.Product;
 import com.ing.demo.store_management.model.product.concrete.Electronic;
@@ -8,7 +8,7 @@ import com.ing.demo.store_management.model.product.concrete.Electronic;
 public class ElectronicProductMapper extends ProductMapper<ElectronicProperties> {
 
     @Override
-    public Electronic mapFromDTO(ProductRequest dto) {
+    public Electronic mapFromDTO(ProductRequestDTO dto) {
         Electronic electronic = (Electronic) super.mapFromDTO(dto);
 
         ElectronicProperties properties = getProperties(dto);
@@ -32,7 +32,7 @@ public class ElectronicProductMapper extends ProductMapper<ElectronicProperties>
     }
 
     @Override
-    protected ElectronicProperties getProperties(ProductRequest dto) {
+    protected ElectronicProperties getProperties(ProductRequestDTO dto) {
         return dto.getElectronicProperties();
     }
 

@@ -2,7 +2,7 @@ package com.ing.demo.store_management.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ing.demo.store_management.controller.dto.product.ProductRequest;
+import com.ing.demo.store_management.controller.dto.product.ProductRequestDTO;
 import com.ing.demo.store_management.controller.dto.product.properties.GroceryProperties;
 import com.ing.demo.store_management.mappers.product.GroceryProductMapper;
 import com.ing.demo.store_management.model.authentication.Role;
@@ -57,15 +57,15 @@ public class ProductControllerTest {
     private UserRepository userRepository;
 
     private Grocery grocery;
-    private ProductRequest productRequest;
+    private ProductRequestDTO productRequestDTO;
 
     @BeforeEach
     public void setup() {
         productRepository.deleteAll();
         userRepository.deleteAll();
 
-        productRequest = prepareProductRequest();
-        grocery = prepareGroceryProduct(productRequest);
+        productRequestDTO = prepareProductRequest();
+        grocery = prepareGroceryProduct(productRequestDTO);
         userRepository.save(
                 new StoreUser("Test", "User", "admin@gmail.com", "testPass", Role.ADMIN)
         );
@@ -75,7 +75,7 @@ public class ProductControllerTest {
     public void testRoleProtectedEndpoints_AuthorizationFail() {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(getUserToken());
-        HttpEntity<ProductRequest> requestEntity = new HttpEntity<>(productRequest, headers);
+        HttpEntity<ProductRequestDTO> requestEntity = new HttpEntity<>(productRequestDTO, headers);
 
         // Try to access the create request with USER token
         assertEquals(
@@ -105,7 +105,7 @@ public class ProductControllerTest {
     public void testRoleProtectedEndpoints_SuccessfulCall() throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(getAdminToken());
-        HttpEntity<ProductRequest> requestEntity = new HttpEntity<>(productRequest, headers);
+        HttpEntity<ProductRequestDTO> requestEntity = new HttpEntity<>(productRequestDTO, headers);
 
         // Call create endpoint
         ResponseEntity<String> createResponse =
@@ -119,7 +119,7 @@ public class ProductControllerTest {
 
         // Call update endpoint
         grocery.setName("UpdatedName");
-        productRequest.setName("UpdatedName");
+        productRequestDTO.setName("UpdatedName");
         int productId = resultCreatedGrocery.getId();
         ResponseEntity<String> updatedResponse =
                 restTemplate.exchange("http://localhost:" + port + "/api/product/{id}", HttpMethod.PUT,
@@ -141,25 +141,25 @@ public class ProductControllerTest {
         assertEquals(0, productRepository.count());
     }
 
-    private Grocery prepareGroceryProduct(ProductRequest productRequest) {
-        return new GroceryProductMapper().mapFromDTO(productRequest);
+    private Grocery prepareGroceryProduct(ProductRequestDTO productRequestDTO) {
+        return new GroceryProductMapper().mapFromDTO(productRequestDTO);
     }
 
-    private ProductRequest prepareProductRequest() {
-        ProductRequest productRequest = new ProductRequest();
-        productRequest.setName("TestGrocery");
-        productRequest.setDescription("TestGrocery Description");
-        productRequest.setCategory(Category.GROCERY);
-        productRequest.setPrice(10.00);
+    private ProductRequestDTO prepareProductRequest() {
+        ProductRequestDTO productRequestDTO = new ProductRequestDTO();
+        productRequestDTO.setName("TestGrocery");
+        productRequestDTO.setDescription("TestGrocery Description");
+        productRequestDTO.setCategory(Category.GROCERY);
+        productRequestDTO.setPrice(10.00);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.HOUR_OF_DAY, 6);
         GroceryProperties groceryProperties = new GroceryProperties(calendar.getTime(), 9.8, true);
 
-        productRequest.setGroceryProperties(groceryProperties);
+        productRequestDTO.setGroceryProperties(groceryProperties);
 
-        return productRequest;
+        return productRequestDTO;
     }
 
     private String getAdminToken() {
