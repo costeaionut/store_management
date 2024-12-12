@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 @Data
-public class ProductRequest {
+public class ProductRequestDTO {
 
     // Base-product specific fields
     @NotEmpty(message = "Name can not be empty")

@@ -1,6 +1,6 @@
 package com.ing.demo.store_management.controller;
 
-import com.ing.demo.store_management.controller.dto.product.ProductRequest;
+import com.ing.demo.store_management.controller.dto.product.ProductRequestDTO;
 import com.ing.demo.store_management.mappers.product.ProductMapper;
 import com.ing.demo.store_management.model.product.base.Product;
 import com.ing.demo.store_management.service.ProductService;
@@ -51,7 +51,7 @@ public class ProductController {
 
     @PostMapping("/")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'INVENTORY_MANAGER')")
-    public ResponseEntity<Product> createProduct(@Validated @RequestBody ProductRequest createDto) {
+    public ResponseEntity<Product> createProduct(@Validated @RequestBody ProductRequestDTO createDto) {
         LOGGER.debug("Processing createProduct request for product: {}.", createDto);
 
         Product productToCreate = convertDtoToProduct(createDto);
@@ -61,7 +61,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'INVENTORY_MANAGER')")
-    public ResponseEntity<Product> updateProduct(@Validated @RequestBody ProductRequest updateDto, @PathVariable int id) {
+    public ResponseEntity<Product> updateProduct(@Validated @RequestBody ProductRequestDTO updateDto, @PathVariable int id) {
         LOGGER.debug("Processing updateProduct request for id {} and product new details: {}.", id, updateDto);
 
         Product productToUpdate = convertDtoToProduct(updateDto);
@@ -79,7 +79,7 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
-    private Product convertDtoToProduct(ProductRequest dto) {
+    private Product convertDtoToProduct(ProductRequestDTO dto) {
         ProductMapper<?> mapper = productService.getMapperFromCategory(dto.getCategory());
         return mapper.mapFromDTO(dto);
     }
