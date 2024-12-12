@@ -54,7 +54,7 @@ public class ProductLogServiceImpl implements ProductLogService {
             return logRepository.save(log);
         } catch (Exception e) {
             LOGGER.error("Unexpected error while adding log for user: {}, product: {}, operation: {}", user, product, operation);
-            throw new ProductLogException("Unexpected error occured during product log creation", e.getCause());
+            throw new ProductLogException("Unexpected error occurred during product log creation", e.getCause());
         }
     }
 }

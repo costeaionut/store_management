@@ -2,6 +2,7 @@ package com.ing.demo.store_management.model.log;
 
 import com.ing.demo.store_management.model.authentication.StoreUser;
 import com.ing.demo.store_management.model.product.base.Product;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -28,16 +29,18 @@ public class Log {
     private Long id;
 
     @NotNull
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private StoreUser user;
 
     @NotNull
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
-    @OnDelete(action = OnDeleteAction.NO_ACTION)
-    private Product product;
+    @Column
+    private Integer productId;
+
+    @NotNull
+    @Column
+    private String productName;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -49,7 +52,8 @@ public class Log {
 
     public Log(StoreUser user, Product product, OperationType operation) {
         this.user = user;
-        this.product = product;
+        this.productId = product.getId();
+        this.productName = product.getName();
         this.operation = operation;
         this.timestamp = LocalDateTime.now();
     }
