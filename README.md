@@ -54,7 +54,7 @@ mvn spring-boot:run
 
 5. Test the application
 
-- The `Store Management.postman_collection.json` can be imported in the local Postman and used for testing purposes.
+- The [Store Management.postman_collection.json](https://github.com/costeaionut/store_management/blob/develop/Store%20Management.postman_collection.json) can be imported in the local Postman and used for testing purposes.
 ## API Endpoints
 
 ### Authentication endpoints
