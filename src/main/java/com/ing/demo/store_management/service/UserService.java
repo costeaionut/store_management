@@ -5,5 +5,8 @@ import org.springframework.security.core.Authentication;
 
 public interface UserService {
     void registerUser(StoreUser user);
+
     Authentication verifyUser(String email, String password);
+
+    StoreUser getAuthenticatedUser();
 }
