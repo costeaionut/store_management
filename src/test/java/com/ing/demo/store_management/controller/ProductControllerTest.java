@@ -5,9 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ing.demo.store_management.controller.dto.product.ProductRequest;
 import com.ing.demo.store_management.controller.dto.product.properties.GroceryProperties;
 import com.ing.demo.store_management.mappers.product.GroceryProductMapper;
+import com.ing.demo.store_management.model.authentication.Role;
+import com.ing.demo.store_management.model.authentication.StoreUser;
 import com.ing.demo.store_management.model.product.base.Category;
 import com.ing.demo.store_management.model.product.concrete.Grocery;
 import com.ing.demo.store_management.repository.ProductRepository;
+import com.ing.demo.store_management.repository.UserRepository;
 import com.ing.demo.store_management.service.JWTService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,7 +45,7 @@ public class ProductControllerTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private ProductRepository repository;
+    private ProductRepository productRepository;
 
     @Autowired
     private JWTService jwtService;
@@ -50,15 +53,22 @@ public class ProductControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    Grocery grocery;
-    ProductRequest productRequest;
+    @Autowired
+    private UserRepository userRepository;
+
+    private Grocery grocery;
+    private ProductRequest productRequest;
 
     @BeforeEach
     public void setup() {
+        productRepository.deleteAll();
+        userRepository.deleteAll();
+
         productRequest = prepareProductRequest();
         grocery = prepareGroceryProduct(productRequest);
-
-        repository.deleteAll();
+        userRepository.save(
+                new StoreUser("Test", "User", "admin@gmail.com", "testPass", Role.ADMIN)
+        );
     }
 
     @Test
@@ -105,7 +115,7 @@ public class ProductControllerTest {
         // Assert create endpoint
         assertEquals(HttpStatus.CREATED, createResponse.getStatusCode());
         assertGroceryProduct(grocery, resultCreatedGrocery);
-        assertEquals(1, repository.count());
+        assertEquals(1, productRepository.count());
 
         // Call update endpoint
         grocery.setName("UpdatedName");
@@ -118,7 +128,7 @@ public class ProductControllerTest {
 
         assertEquals(HttpStatus.OK, updatedResponse.getStatusCode());
         assertGroceryProduct(grocery, updatedGrocery);
-        assertEquals(1, repository.count());
+        assertEquals(1, productRepository.count());
 
 
         // Try to access the delete request with USER token
@@ -128,7 +138,7 @@ public class ProductControllerTest {
                         new HttpEntity<Void>(headers), String.class, productId
                 ).getStatusCode()
         );
-        assertEquals(0, repository.count());
+        assertEquals(0, productRepository.count());
     }
 
     private Grocery prepareGroceryProduct(ProductRequest productRequest) {
