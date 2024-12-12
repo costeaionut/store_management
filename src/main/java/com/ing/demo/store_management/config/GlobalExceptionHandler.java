@@ -2,6 +2,7 @@ package com.ing.demo.store_management.config;
 
 import com.ing.demo.store_management.exception.authentication.InvalidCredentialsException;
 import com.ing.demo.store_management.exception.authentication.UserAlreadyExistsException;
+import com.ing.demo.store_management.exception.log.ProductLogException;
 import com.ing.demo.store_management.exception.product.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 
-    @ExceptionHandler(InvalidCredentialsException.class)
+    @ExceptionHandler({InvalidCredentialsException.class, IllegalStateException.class})
     public ResponseEntity<String> handleInvalidCredentialsException(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
@@ -29,6 +30,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({IllegalArgumentException.class, ProductNotFoundException.class})
     public ResponseEntity<String> handleIllegalArgumentException(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(ProductLogException.class)
+    public ResponseEntity<String> handleLogException(ProductLogException e) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
