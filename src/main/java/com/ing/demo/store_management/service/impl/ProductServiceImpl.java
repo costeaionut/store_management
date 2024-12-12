@@ -5,9 +5,11 @@ import com.ing.demo.store_management.mappers.product.ClothingProductMapper;
 import com.ing.demo.store_management.mappers.product.ElectronicProductMapper;
 import com.ing.demo.store_management.mappers.product.GroceryProductMapper;
 import com.ing.demo.store_management.mappers.product.ProductMapper;
+import com.ing.demo.store_management.model.log.OperationType;
 import com.ing.demo.store_management.model.product.base.Category;
 import com.ing.demo.store_management.model.product.base.Product;
 import com.ing.demo.store_management.repository.ProductRepository;
+import com.ing.demo.store_management.service.ProductLogService;
 import com.ing.demo.store_management.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +24,14 @@ import java.util.Optional;
 public class ProductServiceImpl implements ProductService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ProductServiceImpl.class);
+
     private final ProductRepository repository;
+    private final ProductLogService logService;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository repository) {
+    public ProductServiceImpl(ProductRepository repository, ProductLogService logService) {
         this.repository = repository;
+        this.logService = logService;
     }
 
     /**
@@ -72,7 +77,10 @@ public class ProductServiceImpl implements ProductService {
             LOGGER.error("Missing new product details.");
             throw new IllegalArgumentException("Product can't be null");
         }
-        return repository.save(newProduct);
+
+        Product savedProduct = repository.save(newProduct);
+        logService.addLog(savedProduct, OperationType.CREATE);
+        return repository.save(savedProduct);
     }
 
     /**
@@ -93,6 +101,8 @@ public class ProductServiceImpl implements ProductService {
         ProductMapper<?> mapper = getMapperFromCategory(updatedProduct.getCategory());
         mapper.updateProductFields(existingProduct, updatedProduct);
 
+        updatedProduct = repository.save(existingProduct);
+        logService.addLog(updatedProduct, OperationType.UPDATE);
         return existingProduct;
     }
 
@@ -104,6 +114,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(int id) {
         LOGGER.debug("Deleting entry for product with id: {}.", id);
+        Product product = this.retrieveProductById(id);
+        logService.addLog(product, OperationType.DELETE);
         repository.deleteById(id);
     }
 

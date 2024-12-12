@@ -13,9 +13,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -93,5 +96,23 @@ public class UserServiceImpl implements UserService {
             LOGGER.error("User authentication failed due to unexpected error {}", e.getMessage());
             throw new InvalidCredentialsException(e.getMessage(), e.getCause());
         }
+    }
+
+    /**
+     * Fetch the authenticated user based on the current authentication context
+     *
+     * @return the authenticated {@link StoreUser} uer
+     */
+    @Override
+    public StoreUser getAuthenticatedUser() {
+        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<StoreUser> currentUser = repository.findByEmail(email);
+
+        if (currentUser.isEmpty()) {
+            //Redirect to log out...
+            throw new IllegalStateException("Invalid authentication context.");
+        }
+
+        return currentUser.get();
     }
 }

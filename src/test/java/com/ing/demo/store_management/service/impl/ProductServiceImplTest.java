@@ -4,6 +4,7 @@ import com.ing.demo.store_management.exception.product.ProductNotFoundException;
 import com.ing.demo.store_management.model.product.base.Category;
 import com.ing.demo.store_management.model.product.base.Product;
 import com.ing.demo.store_management.repository.ProductRepository;
+import com.ing.demo.store_management.service.ProductLogService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -22,6 +23,9 @@ public class ProductServiceImplTest {
     @Mock
     ProductRepository repositoryMock;
 
+    @Mock
+    ProductLogService logServiceMock;
+
     ProductServiceImpl productService;
 
     Product product;
@@ -29,7 +33,8 @@ public class ProductServiceImplTest {
     @BeforeEach
     public void setup() {
         repositoryMock = Mockito.mock(ProductRepository.class);
-        productService = new ProductServiceImpl(repositoryMock);
+        logServiceMock = Mockito.mock(ProductLogService.class);
+        productService = new ProductServiceImpl(repositoryMock, logServiceMock);
         product = new Product();
         product.setName("Test");
         product.setDescription("Test Description");
@@ -102,6 +107,7 @@ public class ProductServiceImplTest {
     @Test
     public void testDeleteProduct_Successful() {
         int productId = 2;
+        when(repositoryMock.findById(productId)).thenReturn(Optional.of(new Product()));
 
         assertDoesNotThrow(() -> productService.deleteProduct(productId));
         verify(repositoryMock, times(1)).deleteById(productId);
